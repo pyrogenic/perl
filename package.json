@@ -2,8 +2,27 @@
   "name": "@pyrogenic/perl",
   "version": "1.0.0",
   "description": "Pyrogenic’s Easy React Library",
-  "main": "lib/index.js",
   "repository": "https://github.com/pyrogenic/perl",
   "author": "Joshua Pollak <abottomlesspit@gmail.com>",
-  "license": "MIT"
+  "license": "GPL-3.0-or-later",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "@pyrogenic/asset": "~1.0.0",
+    "typescript": "~4.3.2"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "~5.12.0",
+    "@testing-library/react": "~11.2.7",
+    "@testing-library/react-hooks": "~7.0.0",
+    "@testing-library/user-event": "~13.1.9",
+    "jest-environment-jsdom": "~27.0.3",
+    "react-test-renderer": "~17.0.2"
+  },
+  "scripts": {
+    "preinstall": "yarn tsc --project .",
+    "test": "react-scripts test --env=jest-environment-jsdom",
+    "watch": "yarn preinstall --watch"
+  }
 }
