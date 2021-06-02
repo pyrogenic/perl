@@ -1,20 +1,20 @@
 import React from "react";
 import join from "./join";
 
-type TDefaultValue<T> = Exclude<T extends Function ? T : (T | (() => T)), undefined>;
+export type TDefaultValue<T> = T extends Function ? T : (T | (() => T));
 
 export type Stringifiable = Parameters<JSON["stringify"]>[0];
 
 export type SetState<T extends Stringifiable> = React.Dispatch<React.SetStateAction<T>>;
 
-type StorageState<T extends Stringifiable> = [state: T, setState: SetState<T>, resetState: () => void];
+export type StorageState<T extends Stringifiable> = [state: T, setState: SetState<T>, resetState: () => void];
 
 export default function useStorageState<T extends Stringifiable>(
     storage: Storage | "local" | "session",
     keys: string | [string, ...string[]],
     defaultValue: TDefaultValue<T>): StorageState<T> {
     const key = join(":", keys);
-    const [storageSet, storageValue] = React.useMemo(() => {
+    const [storageSet, storageClear, storageValue] = React.useMemo(() => {
         if (storage === "local") {
             storage = window.localStorage;
         } else if (storage === "session") {
@@ -22,6 +22,7 @@ export default function useStorageState<T extends Stringifiable>(
         }
         return [
             storage.setItem.bind(storage, key),
+            storage.removeItem.bind(storage, key),
             storage.getItem(key),
         ];
     }, [storage, key]);
@@ -43,10 +44,11 @@ export default function useStorageState<T extends Stringifiable>(
     } else {
         resultValue = currentValue;
     }
-    const [state, setState] = React.useState(resultValue as T);
-    React.useEffect(effect, [state, storageSet]);
+    const [state, setState] = React.useState<T>(resultValue);
+    React.useEffect(stateToStorage, [state, storageSet, storageClear]);
+    React.useEffect(setState.bind(null, resultValue), [key, setState]);
     return [state, setState, resetState];
-    function effect() {
+    function stateToStorage() {
         storageSet(JSON.stringify(state));
     }
     function resetState() {

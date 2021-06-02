@@ -1,4 +1,7 @@
-import useStorageState from "./useStorageState";
+import useStorageState, { StorageState, Stringifiable, TDefaultValue } from "./useStorageState";
 
-const useSessionState = useStorageState.bind(null, window.sessionStorage);
-export default useSessionState;
+export default function useSessionState<T extends Stringifiable>(
+    keys: string | [string, ...string[]],
+    defaultValue: TDefaultValue<T>): StorageState<T> {
+    return useStorageState(window.sessionStorage, keys, defaultValue);
+}
