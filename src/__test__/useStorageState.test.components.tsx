@@ -12,6 +12,9 @@ export function Test<T>({
     defaultValue: (T | (() => T)),
     onClickValue: T,
 }) {
-    const [state, setState] = useStorageState<T>(kind, storageKey, defaultValue as any);
-    return <button id="button" onClick={() => setState(onClickValue)}>Value: {state}</button>;
+    const [state, setState, resetState] = useStorageState<T>(kind, storageKey, defaultValue as any);
+    return <>
+        <button id="button" onClick={() => setState(onClickValue)}>Value: {state}</button>
+        <button id="reset" onClick={resetState}>Reset</button>
+    </>;
 }

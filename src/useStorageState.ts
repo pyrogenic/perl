@@ -3,12 +3,16 @@ import join from "./join";
 
 type TDefaultValue<T> = Exclude<T extends Function ? T : (T | (() => T)), undefined>;
 
-type Stringifiable = Parameters<JSON["stringify"]>[0];
+export type Stringifiable = Parameters<JSON["stringify"]>[0];
+
+export type SetState<T extends Stringifiable> = React.Dispatch<React.SetStateAction<T>>;
+
+type StorageState<T extends Stringifiable> = [state: T, setState: SetState<T>, resetState: () => void];
 
 export default function useStorageState<T extends Stringifiable>(
     storage: Storage | "local" | "session",
     keys: string | [string, ...string[]],
-    defaultValue: TDefaultValue<T>): [T, React.Dispatch<React.SetStateAction<T>>] {
+    defaultValue: TDefaultValue<T>): StorageState<T> {
     const key = join(":", keys);
     const [storageSet, storageValue] = React.useMemo(() => {
         if (storage === "local") {
@@ -39,11 +43,17 @@ export default function useStorageState<T extends Stringifiable>(
     } else {
         resultValue = currentValue;
     }
-    const result = React.useState(resultValue as T);
-    const [state] = result;
+    const [state, setState] = React.useState(resultValue as T);
     React.useEffect(effect, [state, storageSet]);
-    return result;
+    return [state, setState, resetState];
     function effect() {
         storageSet(JSON.stringify(state));
+    }
+    function resetState() {
+        if (typeof defaultValue === "function") {
+            setState(defaultValue());
+        } else {
+            setState(defaultValue);
+        }
     }
 }

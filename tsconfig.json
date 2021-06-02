@@ -24,7 +24,7 @@
       "dom.iterable",
       "esnext"
     ],
-    "noEmit": false,
+    "noEmit": true
   },
   "include": [
     "src"

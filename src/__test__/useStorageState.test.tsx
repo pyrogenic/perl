@@ -18,8 +18,8 @@ describe("useStorageState", () => {
             defaultValue={"def"}
             onClickValue={"pressed"}
         />, container);
-        let button = container.querySelector("button")!;
-        expect(container.textContent).toEqual("Value: def");
+        let [button, reset] = container.querySelectorAll("button")!;
+        expect(button.textContent).toEqual("Value: def");
         expect(storage.length).toEqual(0);
         click(button);
         expect(storage.length).toEqual(1);
@@ -33,9 +33,9 @@ describe("useStorageState", () => {
             defaultValue={q}
             onClickValue={"something even newer"}
         />, container);
-        button = container.querySelector("button")!;
+        [button, reset] = container.querySelectorAll("button")!;
         expect(q).not.toHaveBeenCalled();
-        expect(container.textContent).toEqual("Value: pressed");
+        expect(button.textContent).toEqual("Value: pressed");
         ReactDOM.unmountComponentAtNode(container);
 
         storage.clear();
@@ -46,9 +46,15 @@ describe("useStorageState", () => {
             defaultValue={q}
             onClickValue={"something even newer"}
         />, container);
-        button = container.querySelector("button")!;
         expect(q).toHaveBeenCalledTimes(1);
-        expect(container.textContent).toEqual("Value: something new");
+        [button, reset] = container.querySelectorAll("button")!;
+        expect(button.textContent).toEqual("Value: something new");
+        [button, reset] = container.querySelectorAll("button")!;
+        click(button);
+        expect(button.textContent).toEqual("Value: something even newer");
+        [button, reset] = container.querySelectorAll("button")!;
+        click(reset);
+        expect(button.textContent).toEqual("Value: something new");
         ReactDOM.unmountComponentAtNode(container);
     });
 
