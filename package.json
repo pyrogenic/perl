@@ -1,0 +1,9 @@
+{
+  "name": "@pyrogenic/perl",
+  "version": "1.0.0",
+  "description": "Pyrogenic’s Easy React Library",
+  "main": "lib/index.js",
+  "repository": "https://github.com/pyrogenic/perl",
+  "author": "Joshua Pollak <abottomlesspit@gmail.com>",
+  "license": "MIT"
+}
