@@ -9,7 +9,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "@pyrogenic/asset": "~1.0.0",
+    "@pyrogenic/asset": "^1.0.0",
     "typescript": "~4.3.2"
   },
   "devDependencies": {
