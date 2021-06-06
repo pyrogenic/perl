@@ -7,8 +7,8 @@ export default function minDiff(
         preA?: string,
         postB?: string
     } = {}): [string | undefined, string | undefined] {
-    a = a?.replace(/\W/, "");
-    b = b?.replace(/\W/, "");
+    a = a?.replace(/^\W+/, "");
+    b = b?.replace(/^\W+/, "");
     if (a === undefined) {
         if (b === undefined) {
             return [undefined, undefined];
@@ -35,7 +35,7 @@ export default function minDiff(
         for (const [ca, cb] of zipped) {
             if (ca) { aa += ca; }
             if (cb) { bb += cb; }
-            if (ca !== cb && ca?.toLocaleLowerCase() !== cb?.toLocaleLowerCase()) {
+            if (ca !== cb && !sameString(ca, cb)) {
                 break;
             }
         }
@@ -54,7 +54,22 @@ export default function minDiff(
     }
     return [aa, bb];
 }
-function sameString(a: string, b: string) {
-    return a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase()) === 0;
+function simplify(ca: string | undefined) {
+    return ca?.toLocaleLowerCase().replace(/\s|['"]/, "");
+}
+
+function sameString(a: string | undefined, b: string | undefined) {
+    a = simplify(a);
+    b = simplify(b);
+    if (!a) {
+        if (!b) {
+            return true;
+        }
+        return false;
+    }
+    if (!b) {
+        return false;
+    }
+    return a.localeCompare(b) === 0;
 }
 

@@ -71,5 +71,7 @@ describe("minDiff", () => {
     test("real-world examples", () => {
         expect(minDiff("Bobby Hutcherson", "Brian Eno", { preA: "Bobby Hutcherson", postB: "Brian Eno" })).toEqual(["Bo", "Br"]);
         expect(minDiff("Bloodrock", "Bobby Hutcherson", { preA: "Blood, Sweat And Tears", postB: "Bobby Hutcherson" })).toEqual(["Bloodr", "Bo"]);
+        expect(minDiff("Art Blakey", "Art Blakey & The Jazz Messengers")).toEqual(["Art Blakey", "Art Blakey &"]);
+        expect(minDiff("AIR", "Art Blakey & The Jazz Messengers", { postB: "Art Blakey & The Jazz Messengers" })).toEqual(["AI", "Ar"]);
     })
 });

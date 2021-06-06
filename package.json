@@ -24,5 +24,14 @@
     "preinstall": "yarn tsc --project .",
     "test": "react-scripts test --env=jest-environment-jsdom",
     "watch": "yarn preinstall --watch"
+  },
+  "jest": {
+    "global": {
+      "ts-jest": {
+        "tsConfig": {
+          "noEmit": true
+        }
+      }
+    }
   }
 }
