@@ -1,5 +1,12 @@
 import minDiff, { Internals } from "../minDiff";
-const { sameString, simplify, solo } = Internals;
+
+const {
+    sameString,
+    simplify,
+    solo,
+    split,
+} = Internals;
+
 describe("simplify", () => {
     it("removes awkward charaters", () => {
         expect(simplify("")).toEqual("");
@@ -24,8 +31,38 @@ describe("solo", () => {
         expect(solo("literal", " ")).toEqual(" ");
         expect(solo("literal", "apple")).toEqual("apple");
     })
+    test("words", () => {
+        expect(solo("words", "")).toEqual("");
+        expect(solo("words", "a")).toEqual("a");
+        expect(solo("words", " ")).toEqual("");
+        expect(solo("words", "apple")).toEqual("apple");
+        expect(solo("words", " apple")).toEqual("apple");
+        expect(solo("words", "'apple'")).toEqual("apple");
+        expect(solo("words", "apple jacks")).toEqual("apple");
+        expect(solo("words", "apple-jacks")).toEqual("apple");
+        expect(solo("words", "apple; jacks")).toEqual("apple");
+    })
     test("exception", () => {
         expect(() => solo("invalid" as unknown as any, "")).toThrowError(/unexpected.*invalid/i);
+    })
+});
+
+describe("split", () => {
+    test("minimize", () => {
+        expect(split("minimize", "")).toEqual([]);
+        expect(split("minimize", "a")).toEqual(["a"]);
+        expect(split("minimize", " ")).toEqual([" "]);
+        expect(split("minimize", "apple")).toEqual(["a", "p", "p", "l", "e"]);
+    })
+    test("literal", () => {
+        expect(split("literal", "")).toEqual([""]);
+        expect(split("literal", "a")).toEqual(["a"]);
+        expect(split("literal", " ")).toEqual([" "]);
+        expect(split("literal", "apple")).toEqual(["apple"]);
+        expect(split("literal", "apple jacks")).toEqual(["apple jacks"]);
+    })
+    test("exception", () => {
+        expect(() => split("invalid" as unknown as any, "")).toThrowError(/unexpected.*invalid/i);
     })
 });
 
@@ -126,6 +163,26 @@ describe("minDiff", () => {
         [
             [["literal", "apple"], ["literal", "apple"]],
             ["apple", "apple"],
+        ],
+        [
+            [["words", "Rock"], ["words", "Soul"]],
+            ["Rock", "Soul"],
+        ],
+        [
+            [["words", "Rock Soul"], ["words", "Rock"]],
+            ["Rock Soul", "Rock"],
+        ],
+        [
+            [["words", "Rock"], ["words", "Rock Pop"]],
+            ["Rock", "Rock Pop"],
+        ],
+        [
+            [["words", "Rock Soul"], ["words", "Rock Pop"]],
+            ["Rock Soul", "Rock Pop"],
+        ],
+        [
+            [["words", "Rock Soul Disco"], ["words", "Rock Pop"], { preA: "Rock Soul Dance" }],
+            ["Rock Soul Disco", "Rock Pop"],
         ],
     ].forEach(([[a, b, q], [c, d]]: any) => {
         test(`given ${a} & ${b} & ${q && JSON.stringify(q)}, returns ${c}...${d}`, () => {

@@ -1,6 +1,7 @@
+import compact from "lodash/compact";
 import zip from "lodash/zip";
 
-export type MinDiffMode = "literal" | "minimize";
+export type MinDiffMode = "literal" | "minimize" | "words";
 
 export type MinDiffSrc = string | [mode: MinDiffMode, value: string] | undefined;
 
@@ -18,13 +19,13 @@ export default function minDiff(
     if (Array.isArray(a)) {
         [aMode, a] = a;
     }
-    if (aMode !== "literal") {
+    if (aMode === "minimize") {
         a = a?.replace(/^\W+/, "");
     }
     if (Array.isArray(b)) {
         [bMode, b] = b;
     }
-    if (bMode !== "literal") {
+    if (bMode === "minimize") {
         b = b?.replace(/^\W+/, "");
     }
     if (a === undefined) {
@@ -48,11 +49,17 @@ export default function minDiff(
     if (sameString(a, b)) {
         aa = solo(aMode, a);
         bb = solo(bMode, b);
-    } else if (aMode === "minimize" || bMode === "minimize") {
-        const zipped = zip(a.split(""), b.split(""));
+    } else {
+        const zipped = zip(split(aMode, a), split(bMode, b));
         for (const [ca, cb] of zipped) {
-            if (ca) { aa += ca; }
-            if (cb) { bb += cb; }
+            if (ca) {
+                if (aa && aMode === "words") { aa += " "; }
+                aa += ca;
+            }
+            if (cb) {
+                if (bb && bMode === "words") { bb += " "; }
+                bb += cb;
+            }
             if (ca !== cb && !sameString(ca, cb)) {
                 break;
             }
@@ -61,7 +68,7 @@ export default function minDiff(
     if (aMode === "literal") {
         aa = a;
     } else if (preA && !sameString(preA, a)) {
-        const [, pa] = minDiff(preA, a);
+        const [, pa] = minDiff([aMode, preA], [aMode, a]);
         if (pa && pa.length > aa.length) {
             aa = pa;
         }
@@ -69,11 +76,11 @@ export default function minDiff(
     if (bMode === "literal") {
         bb = b;
     } else if (postB && !sameString(postB, b)) {
-        const [pb,] = minDiff(b, postB);
-        if (pb && pb.length > aa.length) {
+        const [pb,] = minDiff([bMode, b], [bMode, postB]);
+        if (pb && pb.length > bb.length) {
             bb = pb;
         }
-    }    
+    }
     return [aa, bb];
 }
 
@@ -83,6 +90,21 @@ function solo(mode: MinDiffMode, str: string): string {
             return str;
         case "minimize":
             return str[0] ?? "";
+        case "words":
+            return split(mode, str)[0] ?? "";
+        default:
+            throw new Error(`Unexpected mode: ${mode}`);
+    }
+}
+
+function split(mode: MinDiffMode, str: string): string[] {
+    switch (mode) {
+        case "literal":
+            return [str];
+        case "minimize":
+            return str.split("");
+        case "words":
+            return compact(str.split(/\W+/));
         default:
             throw new Error(`Unexpected mode: ${mode}`);
     }
@@ -108,5 +130,8 @@ function sameString(a: string | undefined, b: string | undefined) {
 }
 
 export const Internals = {
-    solo, simplify, sameString,
+    sameString,
+    simplify,
+    solo,
+    split,
 }
