@@ -104,7 +104,7 @@ function split(mode: MinDiffMode, str: string): string[] {
         case "minimize":
             return str.split("");
         case "words":
-            return compact(str.split(/\W+/));
+            return compact(str.split(/\s+/));
         default:
             throw new Error(`Unexpected mode: ${mode}`);
     }
