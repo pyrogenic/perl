@@ -81,6 +81,10 @@ describe("minDiff", () => {
             ["a", undefined]
         ],
         [
+            ["The Nice", "Nickleback"],
+            ["Nice", "Nick"]
+        ],
+        [
             ["apple", "butter"],
             ["a", "b"]
         ],
@@ -138,11 +142,19 @@ describe("minDiff", () => {
         ],
         [
             ["apple", "but", { preA: "Apse", postB: "butter" }],
-            ["app", "b"]
+            ["app", "but"]
         ],
         [
             ["Bloodrock", "Bobby Hutcherson", { preA: "Blood, Sweat", postB: "Bobby Hutcherson" }],
             ["Bloodr", "Bo"]
+        ],
+        [
+            ["Boz Scaggs", "Bruce Springsteen", { preA: "Boston", postB: "Bruce Springsteen" }],
+            ["Boz", "Br"]
+        ],
+        [
+            ["Boz Scaggs Silk Degrees", "Bruce Springsteen Born To Run", { preA: "Boston Boston", postB: "Bruce Springsteen Born In The U.S.A." }],
+            ["Boz", "Br"]
         ],
         [
             [["literal", "apple"], undefined],

@@ -1,5 +1,6 @@
 import compact from "lodash/compact";
 import zip from "lodash/zip";
+import minimize from "./minimize";
 
 export type MinDiffMode = "literal" | "minimize" | "words";
 
@@ -20,13 +21,13 @@ export default function minDiff(
         [aMode, a] = a;
     }
     if (aMode === "minimize") {
-        a = a?.replace(/^\W+/, "");
+        a = minimize(a);
     }
     if (Array.isArray(b)) {
         [bMode, b] = b;
     }
     if (bMode === "minimize") {
-        b = b?.replace(/^\W+/, "");
+        b = minimize(b);
     }
     if (a === undefined) {
         if (b === undefined) {
@@ -104,7 +105,7 @@ function split(mode: MinDiffMode, str: string): string[] {
         case "minimize":
             return str.split("");
         case "words":
-            return compact(str.split(/\s+/));
+            return compact(str.split(/\W+/));
         default:
             throw new Error(`Unexpected mode: ${mode}`);
     }
