@@ -29,10 +29,16 @@ export default function useStorageState<T extends Stringifiable>(
     let currentValue: TDefaultValue<T> | undefined;
     let resultValue: TDefaultValue<T>;
     if (storageValue !== null) {
-        try {
-            currentValue = JSON.parse(storageValue) as TDefaultValue<T> ?? undefined;
-        } catch (e) {
-            console.error(e);
+        if (storageValue === "undefined") {
+            currentValue = undefined;
+        } else if (storageValue === "null") {
+            currentValue = null as unknown as TDefaultValue<T>;
+        } else {
+            try {
+                currentValue = JSON.parse(storageValue) as TDefaultValue<T> ?? undefined;
+            } catch (e) {
+                console.error(e);
+            }
         }
     }
     if (currentValue === undefined) {
@@ -49,7 +55,13 @@ export default function useStorageState<T extends Stringifiable>(
     React.useEffect(setState.bind(null, resultValue), [key, setState]);
     return [state, setState, resetState];
     function stateToStorage() {
-        storageSet(JSON.stringify(state));
+        if (state === undefined) {
+            storageSet("undefined");
+        } else if (state === null) {
+            storageSet("null");
+        } else {
+            storageSet(JSON.stringify(state));
+        }
     }
     function resetState() {
         if (typeof defaultValue === "function") {
