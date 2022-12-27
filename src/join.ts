@@ -12,7 +12,7 @@ export default function join(sep: string, ...args: Strings[]): string | undefine
         case 0:
             return undefined;
         case 1:
-            return f[0];
+            return typeof f[0] === "string" ? f[0] : undefined;
         default:
             return f.join(sep);
     }
