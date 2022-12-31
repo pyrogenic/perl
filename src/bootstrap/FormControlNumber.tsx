@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import { FiMinus, FiPlus } from "react-icons/fi";
+import { setCommentRange } from "typescript";
 import classConcat from "../classConcat";
 import HTMLProps from "../HTMLProps";
 
@@ -59,14 +60,14 @@ export default function FormControlNumber({
     }, [onChange, step]);
     React.useEffect(() => setFloatingValue(value.toString()), [value, setFloatingValue]);
     const width = React.useMemo(() => `${1 + (max ?? 100).toString().length * 0.6}rem`, [max]);
+    const compositeStyle = React.useMemo<React.CSSProperties>(() => ({width, ...style}), [width, style]);
     return <Form.Control
         className={classConcat(className)}
-        style={style}
         title={title}
         onChange={onChangeFloatingValue}
         onKeyDown={onKeyDown}
         onBlur={onChangeInput}
         value={floatingValue}
-        style={{ width: width }}
+        style={compositeStyle}
     />;
 }
