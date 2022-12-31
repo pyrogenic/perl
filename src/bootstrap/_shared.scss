@@ -1,0 +1,9 @@
+@mixin minimal {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: max-content;
+}
+
+// .minimal .form-control {
+//     @include minimal;
+// }

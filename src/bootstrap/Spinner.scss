@@ -1,0 +1,39 @@
+@use "shared";
+
+
+.spinner {
+    @include shared.minimal;
+
+    flex-wrap: nowrap !important;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+
+    &.form-control, .form-control {
+        flex: unset;
+        width: unset;
+        min-width: unset;
+        position: unset;
+    }
+
+    &:not(:hover):not(:focus-within) * {
+        border-color: transparent;
+    }
+
+    &.stealth:not(:hover):not(:focus-within) {
+        button {
+            color: transparent;
+        }
+    }
+
+    button {
+        font-size: small;
+        padding: 0;
+    }
+
+    .count {
+        background: initial;
+        width: 100%;
+        padding: 0 0.4rem;
+        text-align: center;
+    }
+}
