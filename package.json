@@ -28,7 +28,7 @@
     "sass": "~1.57.1"
   },
   "scripts": {
-    "preinstall": "npm-run-all --parallel scss && ts",
+    "preinstall": "npm-run-all --parallel scss ts",
     "ts": "tsc",
     "ts-watch": "yarn ts --watch",
     "test": "jest",
