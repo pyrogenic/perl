@@ -11,7 +11,7 @@ type ChangeHandler = (e: Parameters<React.ChangeEventHandler<HTMLInputElement | 
 function clamp(v: number, min: number | undefined, max: number | undefined) {
     if (min !== undefined && v < min) {
         return min;
-    } 
+    }
     if (max !== undefined && v > max) {
         return max;
     }
@@ -46,8 +46,7 @@ export default function FormControlNumber({
     }, [setFloatingValue]);
     const onKeyDown = React.useCallback<React.KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement>>((e) => {
         const n = Number(floatingValue);
-        if (n.toString() !== floatingValue)
-        {
+        if (n.toString() !== floatingValue) {
             return;
         }
         if (e.key === "Enter") {
@@ -59,14 +58,15 @@ export default function FormControlNumber({
         }
     }, [onChange, step]);
     React.useEffect(() => setFloatingValue(value.toString()), [value, setFloatingValue]);
-    const newLocal = "3rem";
+    const width = React.useMemo(() => `${1 + (max ?? 100).toString().length * 0.6}rem`, [max]);
     return <Form.Control
-                className={classConcat(className)}
-                title={title}
-                onChange={onChangeFloatingValue}
-                onKeyDown={onKeyDown}
-                onBlur={onChangeInput}
-                value={floatingValue}
-                style={{width: newLocal}}
-            />;
+        className={classConcat(className)}
+        style={style}
+        title={title}
+        onChange={onChangeFloatingValue}
+        onKeyDown={onKeyDown}
+        onBlur={onChangeInput}
+        value={floatingValue}
+        style={{ width: width }}
+    />;
 }

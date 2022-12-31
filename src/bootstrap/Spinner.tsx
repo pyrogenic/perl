@@ -54,6 +54,9 @@ export default function Spinner({
                 className="count"
                 title={title}
                 value={value}
+                min={min}
+                max={max}
+                step={step}
                 onChange={onChange}
             />
         }
