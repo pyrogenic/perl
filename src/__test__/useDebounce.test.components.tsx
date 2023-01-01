@@ -12,7 +12,7 @@ export function Test<TArgs extends any[]>({
 }) {
     const [debouncedFn, flush] = useDebounce(fn, options);
     return <>
-        <button id="button" onClick={() => debouncedFn(onClickValue)}>Do It</button>
+        <button id="button" onClick={() => debouncedFn(...onClickValue)}>Do It</button>
         <button id="flush" onClick={flush}>Flush</button>
     </>;
 }

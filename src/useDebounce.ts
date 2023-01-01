@@ -1,9 +1,13 @@
 import React from "react";
 
 type Options = {
+    /** time to wait before invoking (ms) */
     wait?: number,
+    /** if true, invoke every {@link Options#wait} ms as long as calls continue */
     periodic?: boolean,
+    /** if set, various operations are logged with this prefix */
     verbose?: string,
+    /** if true, wrapped function is invoked on the first call instead of at least {@link Options#wait} ms later */
     leading?: boolean,
 }
 
