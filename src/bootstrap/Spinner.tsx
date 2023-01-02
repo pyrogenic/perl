@@ -1,6 +1,5 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import { FiMinus, FiPlus } from "react-icons/fi";
 import classConcat from "../classConcat";
@@ -8,13 +7,18 @@ import HTMLProps from "../HTMLProps";
 import FormControlNumber from "./FormControlNumber";
 import "./Spinner.css";
 
-type ChangeHandler = (e: Parameters<React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>>[0]) => void;
-
+/** 
+ * An attractive replacement for the regular form input field for an integer with more obvious "+" and "-" buttons.
+ * 
+ * ![screenshot](https://user-images.githubusercontent.com/4270301/210191174-ee1db4a0-213b-424b-a416-22194fff699a.png)
+ *
+ * Uses {@link FormControlNumber} to avoid calling {@link onChange} with "0".
+ */
 export default function Spinner({
     value,
     min,
     max,
-    step,
+    step: stepIn,
     title,
     className,
     style,
@@ -29,13 +33,15 @@ export default function Spinner({
     onChange: (value: number) => void,
     onClick?: () => void,
 } & HTMLProps) {
-    step = step ?? 1;
+    const step = stepIn ?? 1;
+    const onClickMinus = React.useCallback(() => onChange(value - step), [onChange, value, step]);
+    const onClickPlus = React.useCallback(() => onChange(value + step), [onChange, value, step]);
     return <InputGroup className={classConcat("spinner", className)} style={style}>
         <Button
             size="sm"
             variant="outline-secondary"
             disabled={min !== undefined && value <= min}
-            onClick={onChange.bind(null, value - step)}
+            onClick={onClickMinus}
         >
             <FiMinus />
         </Button>
@@ -57,6 +63,7 @@ export default function Spinner({
                 min={min}
                 max={max}
                 step={step}
+                arrowStep
                 onChange={onChange}
             />
         }
@@ -65,7 +72,7 @@ export default function Spinner({
             size="sm"
             variant="outline-secondary"
             disabled={max !== undefined && value >= max}
-            onClick={onChange.bind(null, value + step)}
+            onClick={onClickPlus}
         >
             <FiPlus />
         </Button>
