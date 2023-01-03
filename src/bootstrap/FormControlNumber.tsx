@@ -71,7 +71,7 @@ export default function FormControlNumber({
     const onKeyDown = React.useCallback<React.KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement>>((e) => {
         const n = Number(floatingValue);
         const formattedN = format(n);
-        console.log({floatingValue, n, formattedN, value: e.target.value});
+        //console.log({floatingValue, n, formattedN, value: e.target.value});
         if (n.toString() !== floatingValue) {
             return;
         }
